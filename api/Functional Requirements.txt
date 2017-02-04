@@ -1,0 +1,40 @@
+3. Functional Requirements
+3.4.1. Requirements
+Accounts
+	authCheck
+	register
+		Normal
+		Social Media 
+	Login
+		Normal 
+			Remember
+		Social Media
+	Logout
+	update to cert (?)
+	update account
+		password request
+		reset pass
+	get favourites 
+	get liked
+	disable
+		account
+		entry
+	
+	Services
+		get college list
+		get program list
+		get classes
+		get classified
+		get Entries
+		get Entry
+		get comments for post
+	
+	Entry
+		View					#Done
+		post/ add comment 		#Done
+		add rating				#Done
+		Add File
+		flag
+		Fav 
+		edit
+		delete
