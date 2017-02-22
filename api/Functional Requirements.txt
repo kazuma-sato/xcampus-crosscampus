@@ -2,8 +2,8 @@
 3.4.1. Requirements
 Accounts
 	authCheck
-	register
-		Normal
+	register					
+		Normal					#Done (excluding validation, authentication, autherization and bucket creation)
 		Social Media 
 	Login
 		Normal 
@@ -30,11 +30,12 @@ Accounts
 		get comments for post
 	
 	Entry
-		View					#Done
-		post/ add comment 		#Done
-		add rating				#Done
-		Add File
-		flag
+		View					#Done (excluding validation, authentication, autherization)
+		post/ add comment 		#Done (excluding validation, authentication, autherization)
+		add rating				#Done (excluding validation, authentication, autherization)
+		File					// Need to figure out how S3 works with Lambda
+			upload
+			download
 		Fav 
 		edit
 		delete

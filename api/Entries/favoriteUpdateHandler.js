@@ -1,28 +1,27 @@
 'use strict';
 
-console.log('Loading function');
+console.log('Loading favoriteUpdateHandler');
 
-exports.ratingUpdateHandler = function(event, context, callback) {
+exports.favoriteUpdateHandler = function(event, context, callback) {
 
-	var rating = JSON.parse(event.key1);
+	const fav = JSON.parse(event.key1);
 
-	let mysql = require('mysql');
-	let connection = createConnection({
+	const mysql = require('mysql');
+	const connection = mysql.createConnection(
+		require('../xcampusdb')
+	);
 
-		// TODO: Connection details here //
-	});
+	if(fav.type == "add") {
 
-	if(rating.type == "add") {
-
-		var query = connection.query(
-		'INSERT INTO rating SET ?;',
+		let query = connection.query(
+		'INSERT INTO favourite SET ?;',
 		entry,
 		function (error, result) {
 
 			if(error) throw error;
 			console.log('Success! Rating added!');
 
-			var query = connection.query(
+			let query = connection.query(
 				'INSERT INTO notification SET ?',
 				{entryID: entry.id, userID: entry.author},
 				function (error, result) {
@@ -32,17 +31,17 @@ exports.ratingUpdateHandler = function(event, context, callback) {
 				});
 			console.log('Query : ' + query);
 		});
-		console.log('Query : ' + query);
+		console.log('Query : ' + query);	
 
 	} else if(rating.type == "remove") {
 
-		var query = connection.query(
+		let query = connection.query(
 			"DELETE FROM rating WHERE entryID=? AND userID=?",
 			[rating.entryId, rating.userId],
 			function (error, result) {
 
-				if(error) throw error;
-				console.log('Deleted ' + result.affectedRows + ' row(s).');
+			if(error) throw error;
+			console.log('Deleted ' + result.affectedRows + ' row(s).');
 		});
 		console.log('Query : ' + query);	
 	}

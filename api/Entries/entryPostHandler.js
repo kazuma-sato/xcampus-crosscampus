@@ -4,48 +4,39 @@ console.log('Loading function');
 
 exports.entryPostHandler = function(event, context, callback) {
 
-	var entry = JSON.parse(JSON.parse(event.key1).entry);
+	let entry = JSON.parse(event.key1);
 
-	let mysql = require('mysql');
-	let connection = createConnection({
-
-		// TODO: Connection details here //
-	});
+	const mysql = require('mysql');
+	const connection = mysql.createConnection(
+		require('../xcampusdb')
+	);
 
 	// Converts entryType name to id for INSERT query
-	var query = connection.query(
+	let query = connection.query(
 		'SELECT id FROM entryType WHERE name LIKE ?;',
 		entry.entryType,
 		function (error, result) {
 
 			if(error) throw error;
 			console.log('EntryType found!');
-			entry.entryType = row[0].id;
+			entry.entryType = result[0].id;
 		});
-	console.log("Entry type ID is : " + entryType);
+	console.log("Entry type ID is : " + entry.entryType);
 	console.log('Query : ' + query);
 
 	// Insert statement to db
-	var query = connection.query(
+	let query = connection.query(
 		'INSERT INTO entry SET ?;',
 		entry,
 		function (error, result) {
 
 			if(error) throw error;
+			entry.id = result.insertId;
 			console.log('Success! Entry added!');
-
-			// Gets the ID for the new entry
-			var query = connection.query(
-				'LAST_INSERT_ID();',
-				function(error,result) {
-
-					entry.id = row[0].id;
-				}
-			);
 			console.log('Query : ' + query);
 			console.log('EntryID for new entry : ' + entry.id);
 
-			var query = connection.query(
+			let query = connection.query(
 				'INSERT INTO notification SET ?;',
 				{entryID: entry.id, userID: entry.author},
 				function (error, result) {
