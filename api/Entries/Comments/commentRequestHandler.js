@@ -1,3 +1,10 @@
+/*
+	Lambda Function for commentRequestHandler in crosscampus by xcampus API
+	by Kazuma Sato 100948212 kazuma.sato@georgebrown.ca
+    Date created: Feb 2, 2017
+    Date last modified Feb 22, 2017
+*/
+
 'use strict';
 
 console.log('Loading commentRequestHandler');
@@ -10,7 +17,7 @@ exports.commentRequestHandler = function(event, context, callback) {
 
 	const mysql = require('mysql');
 	const connection = mysql.createConnection(
-		require('../xcampusdb')
+		require('xcampusdb')
 	);
 
 	console.log("Building query : ");

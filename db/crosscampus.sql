@@ -1,33 +1,21 @@
 /*
-
-# Remove "/*" above if database already exists
-
-USE  crosscampus;
-
-DROP TIGGER IF EXISTS user_before_insert;
-DROP TIGGER IF EXISTS file_before_insert;
-DROP TIGGER IF EXISTS entry_before_insert;
-DROP TIGGER IF EXISTS entry_before_update;
-
-DROP TABLE IF EXISTS favourite;
-DROP TABLE IF EXISTS notification;
-DROP TABLE IF EXISTS rating;
-DROP TABLE IF EXISTS file;
-DROP TABLE IF EXISTS entry;
-DROP TABLE IF EXISTS entryType;
-DROP TABLE IF EXISTS course;
-DROP TABLE IF EXISTS student_program;
-DROP TABLE IF EXISTS program;
-DROP TABLE IF EXISTS institution;
-DROP TABLE IF EXISTS users;
-
-DROP DATABASE IF EXISTS crosscampus;
+	Schema for crosscampus by xcampus database
+	by Kazuma Sato 100948212 kazuma.sato@georgebrown.ca
+    Date created: Jan 15, 2017
+    Date last modified Feb 22, 2017
 */
 
-CREATE DATABASE IF NOT EXISTS crosscampus;
+/*
+# Remove "/*" above if database already exists
+
 USE crosscampus;
-CREATE USER IF NOT EXISTS 
-xcampus;
+
+DROP DATABASE crosscampus;
+*/
+
+CREATE DATABASE crosscampus;
+USE crosscampus;
+CREATE USER xcampus;
 GRANT all ON crosscampus.* TO 'xcampus'@'localhost' IDENTIFIED BY 'GBCxcamp'; 
 
 CREATE TABLE users
@@ -58,6 +46,7 @@ CREATE TABLE institution
 CREATE TABLE program
 (
 	id varchar(16) NOT NULL,
+	name varchar(256),
 	startSemester date NOT NULL, #needs revision
 	institution int(16) NOT NULL,
 
@@ -72,7 +61,7 @@ CREATE TABLE student_program
 	institution int(16) NOT NULL,
 
 	CONSTRAINT pk_student_program PRIMARY KEY (studentID, programID, startSemester, institution),
-	CONSTRAINT fk_student_program_users FOREIGN KEY (studentID) REFERENCES users (id),
+	CONSTRAINT fk_student_program_users FOREIGN KEY (studentID) REFERENCES users(id),
 	CONSTRAINT fk_student_program_program FOREIGN KEY (programID, startSemester, institution) 
 		REFERENCES program (id, startSemester, institution)
 );
@@ -80,7 +69,7 @@ CREATE TABLE student_program
 CREATE TABLE course
 (
 	id varchar(16) NOT NULL,
-	name varchar(255),
+	name varchar(256),
 	description varchar(1024),
 	programCode varchar(16) NOT NULL,
 	institution int(16) NOT NULL,
@@ -103,18 +92,18 @@ CREATE TABLE entry
 (
   id int(16) NOT NULL AUTO_INCREMENT,
   author int(16) NOT NULL,
-  parentID int(16) NULL,
-  name varchar(128) NOT NULL,
+  parentID int(16),
+  title varchar(256) NOT NULL,
   entryType int(16) NOT NULL,
   description varchar(1024) NOT NULL,
   dateCreated timestamp DEFAULT CURRENT_TIMESTAMP,
   dateModified timestamp NULL ON UPDATE CURRENT_TIMESTAMP,
-  courseID varchar(16) NOT NULL,
-  programCode varchar(16) NOT NULL,
-  institution int(16) NOT NULL,
-  startSemester date NOT NULL,
+  courseID varchar(16),
+  programCode varchar(16),
+  institution int(16),
+  startSemester date,
   flaggedBy int(16),
-  dateFlagged date,
+  dateFlagged timestamp NULL,
 
   CONSTRAINT pk_entry PRIMARY KEY (id),
   CONSTRAINT fk_entry_parentID FOREIGN KEY (parentID) REFERENCES entry(id),

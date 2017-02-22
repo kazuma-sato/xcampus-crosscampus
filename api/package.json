@@ -1,0 +1,19 @@
+{
+  "name": "crosscampus_api",
+  "version": "1.0.0",
+  "description": "RESTful API for CrossCampus by xcampus",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test"
+  },
+  "author": "xcampus",
+  "license": "ISC",
+  "devDependencies": {
+    "aws-sdk": "^2.17.0",
+    "chai": "^3.5.0",
+    "lambda-tester": "^2.7.0",
+    "mocha": "^3.2.0",
+    "mysql": "^2.13.0",
+    "xcampusdb": "^1.0.0"
+  }
+}
