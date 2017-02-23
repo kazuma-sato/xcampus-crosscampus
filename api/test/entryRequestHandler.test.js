@@ -1,33 +1,38 @@
+'use strict';
 /*
 	Unit Test for entryRequestHandler in crosscampus by xcampus API
 	by Kazuma Sato 100948212 kazuma.sato@georgebrown.ca
     Date created: Feb 22, 2017
     Date last modified Feb 22, 2017
 */
-'use strict';
 
-let expect = require('chai').expect;
-let lambdaTester = require('lambda-tester');
-let handlerLambda = require('../Entries/entryRequestHandler');
+let handler = require('../Entries/entryRequestHandler');
+let validRequest = {key1 : '{"id" : 2}'};
+let missingRequest = {key1 : '{"id" : 10}'};
+let invalidRequest = {key1 : '{"id" : null}'};
+let context = {
+    fail : function(){ console.log("context : failure"); },
+    succeed : function() { console.log("context : success") }
+};
 
-let getRequests = ['{"key1":{"id":1}}',
-                 '{"key1":{"id":2}}'];
+var callback = function (error, value=null){
 
-describe('Entries', function() {
-    describe('entryRequestHandler()', function() {
-        it('should generate select query from JSON object from GET request' +
-                ' and return JSON object of entry'), function() {
-            getRequests.forEach(function(getRequest) {
-                it('successful query result for ' + JSON.parse(getRequest).key1.entryId), 
-                    function(done) {
-                        lambdaTester(handlerLambda.commentRequestHandler)
-                        .event(getRequest)
-                        .expectSucceed(function(result){
-                            expect(result.valid).to.be.true;
-                        })
-                        .verify(done);
-                    }
-            })
-        }
-    })
-});
+    var comment; 
+
+    if (value){
+        comment = value;
+    } else {
+        comment = error;
+    }
+    console.log("Callback : " + comment);
+};
+
+console.log("\nTest with valid request : \n");
+handler.entryRequestHandler(validRequest, context, callback);
+/*
+console.log("\nTest with missing request : \n");
+handler.entryRequestHandler(missingRequest, context, callback);
+
+console.log("\nTest with invalid request : \n");
+handler.entryRequestHandler(invalidRequest, context, callback);
+*/

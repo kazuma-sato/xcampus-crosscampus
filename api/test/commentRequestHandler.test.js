@@ -1,35 +1,37 @@
+'use strict';
 /*
 	Unit Test for commentRequestHandler in crosscampus by xcampus API
 	by Kazuma Sato 100948212 kazuma.sato@georgebrown.ca
     Date created: Feb 2, 2017
     Date last modified Feb 22, 2017
 */
-'use strict';
 
-let expect = require('chai').expect;
-let lambdaTester = require('lambda-tester');
-let handlerLambda = require('../Entries/Comments/commentRequestHandler');
+let handler = require('../Entries/Comments/commentRequestHandler');
+let validRequest = {key1 : '{"id" : 3}'};
+let missingRequest = {key1 : '{"id" : 10}'};
+let invalidRequest = {key1 : '{"id" : null}'};
+let context = {
+    fail : function(){ console.log("context : failure"); },
+    succeed : function() { console.log("context : success") }
+};
 
-let getRequests = ['{"key1":{"entryId":4}}',
-                 '{"key1":{"entryId":3}}'];
+var callback = function (error, value=null){
 
-describe('Entries', function() {
-    describe('Comments', function() {
-        describe('commentRequestHandler()', function() {
-            it('should generate select query from JSON object from GET request' +
-                    ' and return JSON object of comment entry'), function() {
-                getRequests.forEach(function(getRequest) {
-                    it('successful query result for ' + JSON.parse(getRequest).key1.entryId), 
-                        function(done) {
-                            lambdaTester(handlerLambda.commentRequestHandler)
-                            .event(getRequest)
-                            .expectSucceed(function(result){
-                                expect(result.valid).to.be.true;
-                            })
-                            .verify(done);
-                        }
-                })
-            }
-        })
-    })
-});
+    var comment; 
+
+    if (value){
+        comment = value;
+    } else {
+        comment = error;
+    }
+    console.log("Callback : " + comment);
+};
+
+console.log("\nTest with valid request : \n");
+handler.commentRequestHandler(validRequest, context, callback);
+
+console.log("\nTest with missing request : \n");
+handler.commentRequestHandler(missingRequest, context, callback);
+
+console.log("\nTest with invalid request : \n");
+handler.commentRequestHandler(invalidRequest, context, callback);
