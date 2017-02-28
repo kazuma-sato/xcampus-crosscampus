@@ -11,15 +11,15 @@ let validRequest = {key1 : '{"id" : 2}'};
 let missingRequest = {key1 : '{"id" : 10}'};
 let invalidRequest = {key1 : '{"id" : null}'};
 let context = {
-    fail : function(){ console.log("context : failure"); },
+    fail : function() { console.log("context : failure"); },
     succeed : function() { console.log("context : success") }
 };
 
 var callback = function (error, value=null){
 
-    var comment; 
+    let comment; 
 
-    if (value){
+    if(value) {
         comment = value;
     } else {
         comment = error;
