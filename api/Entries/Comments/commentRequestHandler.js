@@ -30,23 +30,26 @@ exports.commentRequestHandler = function(event, context, callback) {
 	console.log("Building query : ");
 
 	// Returns Entry data with a tree of child comments
-	let query = connection.query(
+	connection.query(
 		'SELECT * FROM entry WHERE id=?;',
 		id,
 		function(error, result) {
 
 			if(error) {
+				connection.end();
+				context.fail();		
 				callback(error);
-				context.fail();
 			} else if(!result.length) {
-				callback(null, "{}");
+				connection.end();
 				context.fail();
+				callback(new Error("Comment entry #"
+									+ id + " was not found!"));
 			} else {
 				console.log('Comment found!');
-				callback(null, JSON.stringify(result[0]));
+				connection.end();
 				context.succeed();
+				callback(null, JSON.stringify(result[0]));
 			}
-			connection.end();
-		});
-	console.log(query.sql);
+		}
+	);
 };
