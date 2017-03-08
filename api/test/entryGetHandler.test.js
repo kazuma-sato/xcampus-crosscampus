@@ -3,7 +3,7 @@
 	Unit Test for entryGetHandler in crosscampus by xcampus API
 	by Kazuma Sato 100948212 kazuma.sato@georgebrown.ca
     Date created: Feb 22, 2017
-    Date last modified, Mar 5, 2017
+    Date last modified, Mar 7, 2017
 */
 
 let handler = require('../Entries/entryGetHandler');

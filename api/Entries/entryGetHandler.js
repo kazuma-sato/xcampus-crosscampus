@@ -67,7 +67,9 @@ exports.entryGetHandler = function(event, context, callback) {
 								 			+ JSON.stringify(result)));
 						return;
 				}
+				
 				console.log("Getting comments for entry #" + entry.id);
+				
 				connection.query(
 					'SELECT id FROM entry WHERE parentID=?',
 					entry.id,
