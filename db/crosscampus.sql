@@ -2,7 +2,7 @@
 	Schema for crosscampus by xcampus database
 	by Kazuma Sato 100948212 kazuma.sato@georgebrown.ca
     Date created: Jan 15, 2017
-    Date last modified Feb 22, 2017
+    Date last modified Mar 7, 2017
 */
 
 /*
@@ -47,7 +47,7 @@ CREATE TABLE program
 (
 	id varchar(16) NOT NULL,
 	name varchar(256),
-	startSemester date NOT NULL, #needs revision
+	startSemester date NOT NULL, 
 	institution int(16) NOT NULL,
 
 	CONSTRAINT pk_program PRIMARY KEY (id, startSemester, institution)
@@ -162,7 +162,7 @@ CREATE TABLE notification
 (
 	entryID int(16) NOT NULL,
 	userID int(16) NOT NULL,
-
+	
 	CONSTRAINT pk_notification PRIMARY KEY (entryID, userID),
 	CONSTRAINT fk_notification_entry FOREIGN KEY (entryID) REFERENCES entry(id),
 	CONSTRAINT fk_notification_user FOREIGN KEY (userID) REFERENCES users(id)
