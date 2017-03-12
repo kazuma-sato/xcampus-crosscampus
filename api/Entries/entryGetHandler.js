@@ -3,15 +3,15 @@
 	Lambda Function for entryRequestHandler in crosscampus by xcampus API
 	by Kazuma Sato 100948212 kazuma.sato@georgebrown.ca
     Date created: Feb 2, 2017
-    Date last modified Mar 11, 2017
+    Date last modified Mar 12, 2017
 */
 
 console.log('Loading entryGetHandler');
 
 // Returns JSON object of requested entry.
 exports.handler = (event, context, callback) => {
-
-	let entry = { id : event.queryParams.id }; 
+    
+	let entry = { id : event.queryParams.id} ; 
 
 	const mysql = require('mysql');
 	const connection = mysql.createConnection({
@@ -24,13 +24,32 @@ exports.handler = (event, context, callback) => {
 	);
 
 	console.log("Building query");
-
-	// Returns Entry data with a tree of child comments
-	connection.query(
-		'SELECT * FROM entry WHERE id=?',
-		entry.id,
-		findComments
-	);
+    
+    if(event.queryParams.id !== undefined) {
+        
+    	// Returns Entry data with a tree of child comments
+    	connection.query(
+    		'SELECT * FROM entry WHERE id=?',
+    		entry.id,
+    		findComments
+    	);
+    } else {
+        connection.query(
+    		'SELECT * FROM entry',
+    		(error,result) => {
+    		    if(error) {
+    				connection.end();
+    				callback(error);
+    			} else if(!result.length) {
+    				connection.end();
+    				callback(new Error("Error: No entries in database!"));
+    			} else {
+    			    connection.end();
+    			    callback(null, result); 
+        		}
+    		}
+    	);
+    }
 
 	function findComments(error, result) {
 
@@ -53,7 +72,7 @@ exports.handler = (event, context, callback) => {
 					case 3:
 						entry.entryType = "comment";
 						connection.end();
-						callback(null, JSON.stringify(entry));
+						callback(null, entry);
 						return;
 					default:
 						connection.end();
