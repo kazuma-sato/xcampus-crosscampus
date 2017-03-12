@@ -3,28 +3,23 @@
 	Lambda Function for entryRequestHandler in crosscampus by xcampus API
 	by Kazuma Sato 100948212 kazuma.sato@georgebrown.ca
     Date created: Feb 2, 2017
-    Date last modified Mar 7, 2017
+    Date last modified Mar 11, 2017
 */
 
 console.log('Loading entryGetHandler');
 
-// Returns JSON object with POST
-exports.entryGetHandler = function(event, context, callback) {
+// Returns JSON object of requested entry.
+exports.handler = (event, context, callback) => {
 
-	let entry = { id : JSON.parse(event.key1).id }; 
+	let entry = { id : event.queryParams.id }; 
 
 	const mysql = require('mysql');
-	const connection = mysql.createConnection(
-
-		//require('xcampusdb')
-		// for testing
-		{
-			host     : 'localhost',
-			user     : 'xcampus',
+	const connection = mysql.createConnection({
+			host     : 'db.crosscampus.xcamp.us',
+			user     : 'root',
 			password : 'GBCxcamp',
 			database : 'crosscampus',
 			port     : '3306',
-			//debug    : true
 		}
 	);
 
@@ -34,18 +29,19 @@ exports.entryGetHandler = function(event, context, callback) {
 	connection.query(
 		'SELECT * FROM entry WHERE id=?',
 		entry.id,
-		function(error, result) {
+		findComments
+	);
+
+	function findComments(error, result) {
 
 			if(error) {
 				connection.end();
-				context.fail();
 				callback(error);
 			} else if(!result.length) {
 				connection.end();
-				context.fail();
 				callback(new Error("Error: Entry #" + entry.id + " was not found!"));
 			} else {
-				console.log('Entry found!');
+				console.log('Entry found!\n' + JSON.stringify(result));
 				entry = result[0];
 				switch(entry.entryType){
 					case 1:
@@ -57,12 +53,10 @@ exports.entryGetHandler = function(event, context, callback) {
 					case 3:
 						entry.entryType = "comment";
 						connection.end();
-						context.succeed();
 						callback(null, JSON.stringify(entry));
 						return;
 					default:
 						connection.end();
-						context.fail();
 						callback(new Error("Error: Entry #" + entry.id + " has a invalid entry type.\nResult values: "
 								 			+ JSON.stringify(result)));
 						return;
@@ -73,26 +67,24 @@ exports.entryGetHandler = function(event, context, callback) {
 				connection.query(
 					'SELECT id FROM entry WHERE parentID=?',
 					entry.id,
-					function(error, result) {
-
-						if(error) {
-							connection.end();
-							context.fail();
-							callback(error);
-						} else if(!result.length) {
-							entry.comments = null;
-						} else {
-							entry.comments = [];
-							result.forEach(function(element) {
-								entry.comments.push(element.id)
-							});
-						}
-						connection.end();
-						context.succeed();
-						callback(null, JSON.stringify(entry));
-					}
+					callbackWithComments
 				)
 			}
 		}
-	);
+	function callbackWithComments(error, result) {
+
+		if(error) {
+			connection.end();
+			callback(error);
+		} else if(!result.length) {
+			entry.comments = null;
+		} else {
+			entry.comments = [];
+			result.forEach(function(element) {
+				entry.comments.push(element.id)
+			});
+		}
+		connection.end();
+		callback(null, entry);
+	}
 }
