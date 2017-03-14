@@ -1,0 +1,15 @@
+service: xcampus-crosscampusAPI
+
+provider:
+  name: aws
+  runtime: nodejs4.3
+
+functions:
+  lsentryGetHandler:
+    handler: handler
+    events:
+     - http:
+         path: entry
+         method: get
+  entryPostHandler:
+  entryPutHandler:
