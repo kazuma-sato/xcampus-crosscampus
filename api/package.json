@@ -14,5 +14,8 @@
     "lambda-tester": "^2.7.0",
     "mysql": "^2.13.0",
     "xcampusdb": "^1.0.0"
+  },
+  "dependencies": {
+    "amazon-cognito-identity-js": "^1.16.0"
   }
 }

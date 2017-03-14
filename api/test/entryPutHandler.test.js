@@ -5,6 +5,7 @@
     Date created: Mar 5, 2017
     Date last modified Mar 5, 2017
 */
+
 console.log("\nLoading test for function entryPutHandler...\n")
 
 let entryPutHandler = require('../Entries/entryPutHandler');
@@ -12,7 +13,6 @@ let entryPostHandler = require('../Entries/entryPostHandler');
 
 
 // Test event values // 
-
 let notePost = 
 {
     key1 : JSON.stringify(
@@ -36,7 +36,6 @@ let commentPost =
 };
 
 // context Object and callback function simulations for AWS
-
 let context = {
     fail : function() { console.log("Context : failure"); },
     succeed : function() { console.log("Context : success") }

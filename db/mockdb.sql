@@ -63,12 +63,26 @@ VALUES (1, 2);
 INSERT INTO rating(entryID, userID)
 VALUES (4, 1);
 
-# Notification #
-INSERT INTO notification(entryID, userID)
-VALUES (4, 1);
-
 # Favourite #
 INSERT INTO favourite(entryID, userID)
 VALUES (1, 2);
+INSERT INTO favourite(entryID, userID)
+VALUES (3, 2);
+
+# Action Type #
+INSERT INTO actionType(name)
+VALUES ('commented');
+INSERT INTO actionType(name)
+VALUES ('rated');
+INSERT INTO actionType(name)
+VALUES ('flagged');
+
+# Notification #
+INSERT INTO notification(entryID, userID, actionID)
+VALUES (4, 1, 2);
+INSERT INTO notification(entryID, userID, actionID)
+VALUES (2, 1, 1);
+INSERT INTO notification(entryID, userID, actionID)
+VALUES (3, 2, 1);
 
 COMMIT;

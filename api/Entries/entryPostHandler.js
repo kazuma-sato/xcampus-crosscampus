@@ -10,7 +10,10 @@ console.log('\nLoading function entryPostHandler...\n');
 
 exports.handler = function(event, context, callback) {
 
-	let entry = event.entry;
+    console.log(JSON.stringify(event,null,2))
+
+	let entry = event;
+	
 	const mysql = require('mysql');
 	const connection = mysql.createConnection({
 			host     : 'db.crosscampus.xcamp.us',
@@ -20,50 +23,62 @@ exports.handler = function(event, context, callback) {
 			port     : '3306',
 		}
 	);
+	
+	const done = (error, response) => {
+        
+        connection.end();
+        
+        if(error){
+            console.log(error.message);
+            callback(error);
+        } else {
+            console.log(JSON.stringify(response, null, 2));
+            callback(null, response);
+        } 
+    };
 
-	connection.query(
-		'SELECT id FROM entryType WHERE name LIKE ?;',
-		entry.entryType,
-		insertEntryCallback
-	);
+	console.log(
+	    connection.query(
+    		'SELECT id FROM entryType WHERE name LIKE ?;',
+    		entry.entryType,
+    		insertEntryCallback
+    	).sql
+    );
 
 	function insertEntryCallback(error, result) {
 
 		if(error) {
-			connection.end();
-			callback(error);
+			done(error);
 		} else if(!result.length) {
-			connection.end();
-			callback(new Error("Error: Entry type is invalid!!"));
+			done(new Error("Error: Entry type is invalid!!"));
 		} else {
-			console.log("Entry type ID is : " + entry.entryType);
 			entry.entryType = result[0].id;
-			connection.query(
-				'INSERT INTO entry SET ?;',
-				entry,
-				selectAuthorCallback
-			);
+			console.log(
+			    connection.query(
+    				'INSERT INTO entry SET ?;',
+    				entry,
+    				selectAuthorCallback
+    			).sql
+    		);
 		}
 	}
 
 	function selectAuthorCallback(error, result) {
 
 		if(error) {
-			connection.end();
-			callback(error);
+			done(error);
 		} else {
 			entry.id = result.insertId;
-			console.log('Success! Entry added!');
-			console.log('EntryID for new entry : ' + entry.id);
 			if(entry.parentID) {
-				connection.query(
-					"SELECT author FROM entry WHERE id =?", 
-					entry.parentID,
-					insertNotificationCallback
-				);
+			    console.log(
+    				connection.query(
+    					"SELECT author FROM entry WHERE id =?", 
+    					entry.parentID,
+    					insertNotificationCallback
+    				).sql
+    			);
 			} else {
-				connection.end();
-				callback(null, entry);
+				done(null, entry);
 			}
 		}
 	}
@@ -71,33 +86,19 @@ exports.handler = function(event, context, callback) {
 	function insertNotificationCallback(error,result) {
 
 		if(error) {
-			connection.end();
-			callback(error);			
+			done(error);			
 		} else if(!result) {
-			connection.end();
-			callback(new Error("Error: ParentID, '" + entry.parentID + "', of entry " + entry.id + " is invalid!"));
+			done(new Error("Error: ParentID, '" + entry.parentID + "', of entry " + entry.id + " is invalid!"));
 		} else {
 			entry.parentEntryAuthor = result[0].author;
-			connection.query(
-				'INSERT INTO notification SET ?;',
-				{ entryID: entry.id, userID: entry.parentEntryAuthor },
-				backToSender
-			);
-		}
-	}
-
-	function backToSender(error, result) {
-
-		if(error) {
-			connection.end();
-			callback(error);
-		} else {
-			console.log("Notification to user #" 
-						+ entry.parentEntryAuthor + " for comment " 
-						+ entry.id + " added.");
-			connection.end();
-			context.succeed();
-			callback(null, entry);
+			console.log(
+			    connection.query(
+    				'INSERT INTO notification(entryID, userID, actionID)' + 
+    				'SELECT ?,?,id FROM actionType WHERE name=?',
+    				[ entry.id, entry.parentEntryAuthor, "commented" ],
+    				(error, result) => error ? done(error) : done(null, entry)
+    			).sql
+    		);
 		}
 	}
 };

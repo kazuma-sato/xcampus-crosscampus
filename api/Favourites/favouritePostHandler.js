@@ -3,29 +3,25 @@
 	Lambda Function for favouritePostHandler in crosscampus by xcampus API
 	by Kazuma Sato 100948212 kazuma.sato@georgebrown.ca
     Date created: Feb 2, 2017
-    Date last modified Mar 7, 2017
+    Date last modified Mar 13, 2017
 */
 
 console.log('Loading favouritePostHandlerPostHandler');
 
-exports.favouritePostHandler = function(event, context, callback) {
+exports.handler = function(event, context, callback) {
 
-	const fav = JSON.parse(event.key1);
+	const fav = JSON.parse(event.favourite);
 
 	const mysql = require('mysql');
-	const connection = mysql.createConnection(
-
-		//require('xcampusdb')
-		// for testing
-		{
-			host     : 'localhost',
-			user     : 'xcampus',
+	const connection = mysql.createConnection({
+			host     : 'db.crosscampus.xcamp.us',
+			user     : 'root',
 			password : 'GBCxcamp',
 			database : 'crosscampus',
 			port     : '3306',
-			//debug    : true
 		}
 	);
+	
 	connection.query(
 		'INSERT INTO favourite SET ?;',
 		fav,

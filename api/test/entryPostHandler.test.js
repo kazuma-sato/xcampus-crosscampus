@@ -8,7 +8,7 @@
 
 console.log("\nLoading test for function entryPostHandler...\n")
 
-let handler = require('../Entries/entryPostHandler');
+let entryPostHandler = require('../Entries/entryPostHandler');
 
 // Test event values // 
 
@@ -52,6 +52,8 @@ let context = {
     succeed : function() { console.log("Context : success") }
 };
 
+console.log(validNotePost.key1)
+
 function callback(error, value=null) {
 
     if (value){
@@ -63,19 +65,19 @@ function callback(error, value=null) {
 
 console.log("\nTest with valid note submission : \nValues : \n" 
             + JSON.stringify(validNotePost));
-handler.entryPostHandler(validNotePost, context, callback);
+entryPostHandler.handler(validNotePost, context, callback);
 
-console.log("\nTest with valid comment submission : \nValues  : \n"
-            + JSON.stringify(validAdPost));
-handler.entryPostHandler(validAdPost, context, callback);
+// console.log("\nTest with valid ad submission : \nValues  : \n"
+//             + JSON.stringify(validAdPost));
+// entryPostHandler.handler(validAdPost, context, callback);
 
-console.log("\nTest with valid comment submission : \nValues  : \n"
-            + JSON.stringify(validCommentPost));
-handler.entryPostHandler(validCommentPost, context, callback);
+// console.log("\nTest with valid comment submission : \nValues  : \n"
+//             + JSON.stringify(validCommentPost));
+// entryPostHandler.handler(validCommentPost, context, callback);
 
-console.log("\nTest with invalid request : \nValues : \n"
-            + JSON.stringify(invalidEntry));
-handler.entryPostHandler(invalidEntry, context, callback);
+// console.log("\nTest with invalid request : \nValues : \n"
+//             + JSON.stringify(invalidEntry));
+// entryPostHandler.handler(invalidEntry, context, callback);
 
 // Clean-up
 

@@ -15,8 +15,8 @@ DROP DATABASE crosscampus;
 
 CREATE DATABASE crosscampus;
 USE crosscampus;
-CREATE USER xcampus;
-GRANT all ON crosscampus.* TO 'xcampus'@'localhost' IDENTIFIED BY 'GBCxcamp'; 
+#CREATE USER xcampus;
+#GRANT all ON crosscampus.* TO 'xcampus'@'localhost' IDENTIFIED BY 'GBCxcamp'; 
 
 CREATE TABLE users
 ( 
@@ -158,16 +158,6 @@ CREATE TABLE rating
 	CONSTRAINT fk_rating_user FOREIGN KEY (userID) REFERENCES users(id)
 );
 
-CREATE TABLE notification
-(
-	entryID int(16) NOT NULL,
-	userID int(16) NOT NULL,
-	
-	CONSTRAINT pk_notification PRIMARY KEY (entryID, userID),
-	CONSTRAINT fk_notification_entry FOREIGN KEY (entryID) REFERENCES entry(id),
-	CONSTRAINT fk_notification_user FOREIGN KEY (userID) REFERENCES users(id)
-);
-
 CREATE TABLE favourite
 (
 	entryID int(16) NOT NULL,
@@ -176,4 +166,24 @@ CREATE TABLE favourite
 	CONSTRAINT pk_favourite PRIMARY KEY (entryID, userID),
 	CONSTRAINT fk_favourite_entry FOREIGN KEY (entryID) REFERENCES entry(id),
 	CONSTRAINT fk_favourite_user FOREIGN KEY (userID) REFERENCES users(id)
+);
+
+CREATE TABLE actionType
+(
+	id int(16) NOT NULL AUTO_INCREMENT,
+	name varchar(32) NOT NULL,
+
+	CONSTRAINT pk_action_type PRIMARY KEY (id)
+);
+
+CREATE TABLE notification
+(
+	entryID int(16) NOT NULL,
+	userID int(16) NOT NULL,
+	actionID int(16) NOT NULL,
+	
+	CONSTRAINT pk_notification PRIMARY KEY (entryID, userID, actionID),
+	CONSTRAINT fk_notification_entry FOREIGN KEY (entryID) REFERENCES entry(id),
+	CONSTRAINT fk_notification_user FOREIGN KEY (userID) REFERENCES users(id),
+	CONSTRAINT fk_notification_actionType FOREIGN KEY (actionID) REFERENCES actionType(id)
 );
