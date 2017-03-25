@@ -4,7 +4,7 @@
   "description": "RESTful API for CrossCampus by xcampus",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test"
+    "test": "./node_modules/mocha/bin/mocha ./test/"
   },
   "author": "xcampus",
   "license": "ISC",
@@ -12,10 +12,10 @@
     "async": "^2.1.5",
     "chai": "^3.5.0",
     "lambda-tester": "^2.7.0",
-    "mysql": "^2.13.0",
-    "xcampusdb": "^1.0.0"
+    "mocha": "^3.2.0",
+    "amazon-cognito-identity-js": "^1.16.0"
   },
   "dependencies": {
-    "amazon-cognito-identity-js": "^1.16.0"
+    "mysql": "^2.13.0"
   }
 }

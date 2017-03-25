@@ -14,7 +14,7 @@ exports.handler = (event, context, callback) => {
     
     console.log('Received event:', JSON.stringify(event, null, 2));
 
-	const connection = mysql.createConnection({
+	const connection = mysql.createConnection( {
 			host     : 'db.crosscampus.xcamp.us',
 			user     : 'root',
 			password : 'GBCxcamp',

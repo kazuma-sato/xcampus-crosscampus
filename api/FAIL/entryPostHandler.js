@@ -8,20 +8,18 @@
 
 console.log('\nLoading function entryPostHandler...\n');
 
-exports.handler = function(event, context, callback) {
+exports.handler = function(entry, context, callback) {
 
-    console.log(JSON.stringify(event,null,2))
-
-	let entry = event;
+    console.log(JSON.stringify(entry,null,2))
 	
 	const mysql = require('mysql');
-	const connection = mysql.createConnection({
-			host     : 'db.crosscampus.xcamp.us',
-			user     : 'root',
-			password : 'GBCxcamp',
-			database : 'crosscampus',
-			port     : '3306',
-		}
+	const connection = mysql.createConnection( {
+            host     : context.host,
+            user     : context.user,
+            password : context.password,
+            database : context.database,
+            port     : context.port
+        }
 	);
 	
 	const done = (error, response) => {
@@ -65,22 +63,19 @@ exports.handler = function(event, context, callback) {
 
 	function selectAuthorCallback(error, result) {
 
-		if(error) {
-			done(error);
+		entry.id = result.insertId;
+		if(entry.parentID) {
+			console.log(
+				connection.query(
+					"SELECT author FROM entry WHERE id =?", 
+					entry.parentID,
+					insertNotificationCallback
+				).sql
+			);
 		} else {
-			entry.id = result.insertId;
-			if(entry.parentID) {
-			    console.log(
-    				connection.query(
-    					"SELECT author FROM entry WHERE id =?", 
-    					entry.parentID,
-    					insertNotificationCallback
-    				).sql
-    			);
-			} else {
-				done(null, entry);
-			}
+			done(error, entry);
 		}
+	
 	}
 
 	function insertNotificationCallback(error,result) {
@@ -96,7 +91,7 @@ exports.handler = function(event, context, callback) {
     				'INSERT INTO notification(entryID, userID, actionID)' + 
     				'SELECT ?,?,id FROM actionType WHERE name=?',
     				[ entry.id, entry.parentEntryAuthor, "commented" ],
-    				(error, result) => error ? done(error) : done(null, entry)
+    				(error, result) => done(error, entry)
     			).sql
     		);
 		}

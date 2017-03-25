@@ -41,11 +41,11 @@ VALUES ('TEST200', 'Testing Tests', 'T177135', 2, CURRENT_DATE);
 
 # Entry Type #
 INSERT INTO entryType(name)
-VALUES ('Note');
+VALUES ('note');
 INSERT INTO entryType(name)
-VALUES ('Ad');
+VALUES ('ad');
 INSERT INTO entryType(name)
-VALUES ('Comment');
+VALUES ('comment');
 
 # Entry #
 INSERT INTO entry(author, title, entryType, description, courseID, programCode, institution, startSemester)

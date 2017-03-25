@@ -30,8 +30,10 @@ CREATE TABLE users
   google varchar(256),
   twitter varchar(256),
   facebook varchar(256),
+  dateDeleted timestamp NULL,
 
-  CONSTRAINT pk_user PRIMARY KEY (id)
+  CONSTRAINT pk_user PRIMARY KEY (id),
+  CONSTRAINT uk_user UNIQUE (username)
 );
 
 CREATE TABLE institution
@@ -73,7 +75,7 @@ CREATE TABLE course
 	description varchar(1024),
 	programCode varchar(16) NOT NULL,
 	institution int(16) NOT NULL,
-	startSemester date NOT NULL, 
+	startSemester date NOT NULL, --should have made a distiction between course start and program start semester
 
 	CONSTRAINT pk_course PRIMARY KEY (id, programCode, institution, startSemester),
 	CONSTRAINT fk_course_programCode FOREIGN KEY (programCode, startSemester, institution) 
